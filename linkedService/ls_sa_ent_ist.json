@@ -1,0 +1,17 @@
+{
+	"name": "ls_sa_ent_ist",
+	"properties": {
+		"annotations": [],
+		"type": "AzureBlobStorage",
+		"typeProperties": {
+			"connectionString": {
+				"type": "AzureKeyVaultSecret",
+				"store": {
+					"referenceName": "ls_akv_ent_ist",
+					"type": "LinkedServiceReference"
+				},
+				"secretName": "sec-key-ent-ist"
+			}
+		}
+	}
+}
