@@ -1,0 +1,63 @@
+{
+	"name": "ds_saentist_output",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "ls_sa_ent_ist",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"container": "output"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": [
+			{
+				"name": "transaction_id",
+				"type": "String"
+			},
+			{
+				"name": "cust_id",
+				"type": "String"
+			},
+			{
+				"name": "tran_date",
+				"type": "String"
+			},
+			{
+				"name": "prod_subcat_code",
+				"type": "String"
+			},
+			{
+				"name": "prod_cat_code",
+				"type": "String"
+			},
+			{
+				"name": "Qty",
+				"type": "String"
+			},
+			{
+				"name": "Rate",
+				"type": "String"
+			},
+			{
+				"name": "Tax",
+				"type": "String"
+			},
+			{
+				"name": "total_amt",
+				"type": "String"
+			},
+			{
+				"name": "Store_type",
+				"type": "String"
+			}
+		]
+	}
+}
