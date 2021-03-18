@@ -1,0 +1,10 @@
+{
+	"name": "ls_akv_ent_ist",
+	"properties": {
+		"annotations": [],
+		"type": "AzureKeyVault",
+		"typeProperties": {
+			"baseUrl": "https://akv-ent-ist.vault.azure.net/"
+		}
+	}
+}
