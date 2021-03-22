@@ -28,7 +28,7 @@
 				}
 			},
 			{
-				"name": "Lookup2",
+				"name": "fetch_updated_date_tblControl",
 				"type": "Lookup",
 				"dependsOn": [],
 				"policy": {
@@ -38,7 +38,19 @@
 					"secureOutput": false,
 					"secureInput": false
 				},
-				"userProperties": []
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "AzureSqlSource",
+						"sqlReaderQuery": "select LastLoadDate from tblControl",
+						"queryTimeout": "02:00:00",
+						"partitionOption": "None"
+					},
+					"dataset": {
+						"referenceName": "ds_oltp_ent_ist_fulload123",
+						"type": "DatasetReference"
+					}
+				}
 			}
 		],
 		"annotations": []
