@@ -1,0 +1,7 @@
+{
+	"name": "pl_fulload_oltp-olap-ist",
+	"properties": {
+		"concurrency": 1,
+		"annotations": []
+	}
+}
