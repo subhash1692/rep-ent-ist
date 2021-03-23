@@ -1,0 +1,34 @@
+{
+	"name": "ds_oltp_ent_ist_fulload123",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "ls_sql_oltp_ist",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "SSN",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "First_Name",
+				"type": "varchar"
+			},
+			{
+				"name": "Phone_N",
+				"type": "varchar"
+			},
+			{
+				"name": "Last_M",
+				"type": "date"
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "fulload123"
+		}
+	}
+}

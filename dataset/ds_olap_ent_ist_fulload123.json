@@ -1,0 +1,16 @@
+{
+	"name": "ds_olap_ent_ist_fulload123",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "ls_sql_olap_ist",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "fulload123"
+		}
+	}
+}
