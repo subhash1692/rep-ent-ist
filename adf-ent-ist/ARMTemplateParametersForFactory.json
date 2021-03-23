@@ -5,6 +5,12 @@
 		"factoryName": {
 			"value": "adf-ent-ist"
 		},
+		"ls_sql_olap_ist_connectionString": {
+			"value": ""
+		},
+		"ls_sql_oltp_ist_connectionString": {
+			"value": ""
+		},
 		"ls_akv_ent_ist_properties_typeProperties_baseUrl": {
 			"value": "https://akv-ent-ist.vault.azure.net/"
 		},

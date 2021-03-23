@@ -7,6 +7,14 @@
 			"metadata": "Data Factory name",
 			"defaultValue": "adf-ent-ist"
 		},
+		"ls_sql_olap_ist_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'ls_sql_olap_ist'"
+		},
+		"ls_sql_oltp_ist_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'ls_sql_oltp_ist'"
+		},
 		"ls_akv_ent_ist_properties_typeProperties_baseUrl": {
 			"type": "string",
 			"defaultValue": "https://akv-ent-ist.vault.azure.net/"
@@ -34,6 +42,92 @@
 			"dependsOn": []
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/ls_sql_olap_ist')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureSqlDatabase",
+				"typeProperties": {
+					"connectionString": "[parameters('ls_sql_olap_ist_connectionString')]"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/ls_sql_oltp_ist')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureSqlDatabase",
+				"typeProperties": {
+					"connectionString": "[parameters('ls_sql_oltp_ist_connectionString')]"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/ds_olap_ent_ist_fulload123')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "ls_sql_olap_ist",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "fulload123"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/ls_sql_olap_ist')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/ds_oltp_ent_ist_fulload123')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "ls_sql_oltp_ist",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "SSN",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "First_Name",
+						"type": "varchar"
+					},
+					{
+						"name": "Phone_N",
+						"type": "varchar"
+					},
+					{
+						"name": "Last_M",
+						"type": "date"
+					}
+				],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "fulload123"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/ls_sql_oltp_ist')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/ls_sa_ent_ist')]",
 			"type": "Microsoft.DataFactory/factories/linkedServices",
 			"apiVersion": "2018-06-01",
@@ -53,6 +147,192 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/linkedServices/ls_akv_ent_ist')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/pl_fulload_oltp-olap-ist')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "ac_copy_oltp_olap",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "AzureSqlSource",
+								"queryTimeout": "02:00:00",
+								"partitionOption": "None"
+							},
+							"sink": {
+								"type": "AzureSqlSink",
+								"tableOption": "autoCreate",
+								"disableMetricsCollection": false
+							},
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"typeConversion": true,
+								"typeConversionSettings": {
+									"allowDataTruncation": true,
+									"treatBooleanAsNumber": false
+								}
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "ds_oltp_ent_ist_fulload123",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "ds_olap_ent_ist_fulload123",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
+					}
+				],
+				"concurrency": 1,
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/ds_oltp_ent_ist_fulload123')]",
+				"[concat(variables('factoryId'), '/datasets/ds_olap_ent_ist_fulload123')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/pl_inld_otp_olap')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "fetch_max_from_oltp",
+						"type": "Lookup",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "AzureSqlSource",
+								"sqlReaderQuery": "Select max(Last_m) as Last_M from fulload123;",
+								"queryTimeout": "02:00:00",
+								"partitionOption": "None"
+							},
+							"dataset": {
+								"referenceName": "ds_oltp_ent_ist_fulload123",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						}
+					},
+					{
+						"name": "fetch_updated_date_tblControl",
+						"type": "Lookup",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "AzureSqlSource",
+								"sqlReaderQuery": "select LastLoadDate as LastLoadDate from tblControl",
+								"queryTimeout": "02:00:00",
+								"partitionOption": "None"
+							},
+							"dataset": {
+								"referenceName": "ds_oltp_ent_ist_fulload123",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						}
+					},
+					{
+						"name": "incremental_load_copy_ist",
+						"type": "Copy",
+						"dependsOn": [
+							{
+								"activity": "fetch_max_from_oltp",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							},
+							{
+								"activity": "fetch_updated_date_tblControl",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "AzureSqlSource",
+								"sqlReaderQuery": {
+									"value": "select * from fulload123\nwhere Last_M <= '@{activity('fetch_max_from_oltp').output.firstRow.Last_M}'\nand Last_M > '@{activity('fetch_updated_date_tblControl').output.firstRow.LastLoadDate}'",
+									"type": "Expression"
+								},
+								"queryTimeout": "02:00:00",
+								"partitionOption": "None"
+							},
+							"sink": {
+								"type": "AzureSqlSink",
+								"preCopyScript": "truncate table fulload123;",
+								"disableMetricsCollection": false
+							},
+							"enableStaging": false
+						},
+						"inputs": [
+							{
+								"referenceName": "ds_oltp_ent_ist_fulload123",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "ds_olap_ent_ist_fulload123",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
+					}
+				],
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/ds_oltp_ent_ist_fulload123')]",
+				"[concat(variables('factoryId'), '/datasets/ds_olap_ent_ist_fulload123')]"
 			]
 		},
 		{
@@ -193,6 +473,64 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/df_copy_oltpToolap')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "ds_oltp_ent_ist_fulload123",
+								"type": "DatasetReference"
+							},
+							"name": "oltpsource"
+						},
+						{
+							"dataset": {
+								"referenceName": "ds_olap_ent_ist_fulload123",
+								"type": "DatasetReference"
+							},
+							"name": "olapassource"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "ds_olap_ent_ist_fulload123",
+								"type": "DatasetReference"
+							},
+							"name": "sink1"
+						},
+						{
+							"dataset": {
+								"referenceName": "ds_olap_ent_ist_fulload123",
+								"type": "DatasetReference"
+							},
+							"name": "sink2"
+						}
+					],
+					"transformations": [
+						{
+							"name": "Exists"
+						},
+						{
+							"name": "AlterRow1"
+						},
+						{
+							"name": "ExistsNot"
+						}
+					],
+					"script": "source(output(\n\t\tSSN as integer,\n\t\tFirst_Name as string,\n\t\tPhone_N as string,\n\t\tLast_M as date\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> oltpsource\nsource(output(\n\t\tSSN as integer,\n\t\tFirst_Name as string,\n\t\tPhone_N as string,\n\t\tLast_M as date\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> olapassource\noltpsource, olapassource exists(oltpsource@SSN == olapassource@SSN,\n\tnegate:false,\n\tbroadcast: 'auto')~> Exists\nExists alterRow(updateIf(true())) ~> AlterRow1\noltpsource, olapassource exists(oltpsource@SSN == olapassource@SSN,\n\tnegate:true,\n\tbroadcast: 'auto')~> ExistsNot\nAlterRow1 sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tdeletable:false,\n\tinsertable:false,\n\tupdateable:true,\n\tupsertable:false,\n\tkeys:['SSN'],\n\tformat: 'table',\n\tmapColumn(\n\t\tSSN,\n\t\tFirst_Name,\n\t\tPhone_N,\n\t\tLast_M\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\terrorHandlingOption: 'stopOnFirstError') ~> sink1\nExistsNot sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\tformat: 'table',\n\tmapColumn(\n\t\tSSN,\n\t\tFirst_Name,\n\t\tPhone_N,\n\t\tLast_M\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\terrorHandlingOption: 'stopOnFirstError') ~> sink2"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/ds_oltp_ent_ist_fulload123')]",
+				"[concat(variables('factoryId'), '/datasets/ds_olap_ent_ist_fulload123')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/pl_copy_sa_in_out')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
@@ -265,6 +603,51 @@
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/datasets/ds_saentist_input')]",
 				"[concat(variables('factoryId'), '/datasets/ds_saentist_output')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/pl_incmental_new_rows')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "df_copy_data",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "df_copy_oltpToolap",
+								"type": "DataFlowReference",
+								"parameters": {},
+								"datasetParameters": {
+									"oltpsource": {},
+									"olapassource": {},
+									"sink1": {},
+									"sink2": {}
+								}
+							},
+							"staging": {},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							},
+							"traceLevel": "Fine"
+						}
+					}
+				],
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/dataflows/df_copy_oltpToolap')]"
 			]
 		}
 	]
