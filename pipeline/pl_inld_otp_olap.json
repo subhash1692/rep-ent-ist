@@ -17,7 +17,7 @@
 				"typeProperties": {
 					"source": {
 						"type": "AzureSqlSource",
-						"sqlReaderQuery": "Select max(Last_m) from fulload123;",
+						"sqlReaderQuery": "Select max(Last_m) as Last_M from fulload123;",
 						"queryTimeout": "02:00:00",
 						"partitionOption": "None"
 					},
@@ -42,7 +42,7 @@
 				"typeProperties": {
 					"source": {
 						"type": "AzureSqlSource",
-						"sqlReaderQuery": "select LastLoadDate from tblControl",
+						"sqlReaderQuery": "select LastLoadDate as LastLoadDate from tblControl",
 						"queryTimeout": "02:00:00",
 						"partitionOption": "None"
 					},
@@ -80,15 +80,29 @@
 				"typeProperties": {
 					"source": {
 						"type": "AzureSqlSource",
-						"sqlReaderQuery": "Select * from fulload123\nWhere Last_m <= '@activity('fetch_max_from_oltp').output' And   Last_m > '@activity('fetch_updated_date_tblControl').output'",
+						"sqlReaderQuery": {
+							"value": "select * from fulload123\nwhere Last_M <= '@{activity('fetch_max_from_oltp').output.firstRow.Last_M}'\nand Last_M > '@{activity('fetch_updated_date_tblControl').output.firstRow.LastLoadDate}'",
+							"type": "Expression"
+						},
 						"queryTimeout": "02:00:00",
 						"partitionOption": "None"
+					},
+					"sink": {
+						"type": "AzureSqlSink",
+						"preCopyScript": "truncate table fulload123;",
+						"disableMetricsCollection": false
 					},
 					"enableStaging": false
 				},
 				"inputs": [
 					{
 						"referenceName": "ds_oltp_ent_ist_fulload123",
+						"type": "DatasetReference"
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "ds_olap_ent_ist_fulload123",
 						"type": "DatasetReference"
 					}
 				]
