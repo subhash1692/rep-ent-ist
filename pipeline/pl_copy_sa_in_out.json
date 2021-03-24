@@ -28,7 +28,7 @@
 								"value": "@utcnow()",
 								"type": "Expression"
 							},
-							"wildcardFileName": "*",
+							"wildcardFileName": "*.csv",
 							"enablePartitionDiscovery": false
 						},
 						"formatSettings": {
