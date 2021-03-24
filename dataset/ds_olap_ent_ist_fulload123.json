@@ -7,7 +7,25 @@
 		},
 		"annotations": [],
 		"type": "AzureSqlTable",
-		"schema": [],
+		"schema": [
+			{
+				"name": "SSN",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "First_Name",
+				"type": "varchar"
+			},
+			{
+				"name": "Phone_N",
+				"type": "varchar"
+			},
+			{
+				"name": "Last_M",
+				"type": "date"
+			}
+		],
 		"typeProperties": {
 			"schema": "dbo",
 			"table": "fulload123"
