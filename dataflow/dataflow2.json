@@ -1,0 +1,52 @@
+{
+	"name": "dataflow2",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "ds_oltp_ent_ist_fulload123",
+						"type": "DatasetReference"
+					},
+					"name": "OLTPSource"
+				},
+				{
+					"dataset": {
+						"referenceName": "ds_olap_ent_ist_fulload123",
+						"type": "DatasetReference"
+					},
+					"name": "OLAPSource"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "ds_olap_ent_ist_fulload123",
+						"type": "DatasetReference"
+					},
+					"name": "sink1"
+				},
+				{
+					"dataset": {
+						"referenceName": "ds_olap_ent_ist_fulload123",
+						"type": "DatasetReference"
+					},
+					"name": "sink2"
+				}
+			],
+			"transformations": [
+				{
+					"name": "Exists1"
+				},
+				{
+					"name": "dontExists2"
+				},
+				{
+					"name": "AlterRow1"
+				}
+			],
+			"script": "source(output(\n\t\tSSN as integer,\n\t\tFirst_Name as string,\n\t\tPhone_N as string,\n\t\tLast_M as date\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> OLTPSource\nsource(output(\n\t\tSSN as integer,\n\t\tFirst_Name as string,\n\t\tPhone_N as string,\n\t\tLast_M as date\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> OLAPSource\nOLTPSource, OLAPSource exists(OLTPSource@SSN == OLAPSource@SSN,\n\tnegate:false,\n\tbroadcast: 'auto')~> Exists1\nOLTPSource, OLAPSource exists(OLTPSource@SSN == OLAPSource@SSN,\n\tnegate:true,\n\tbroadcast: 'auto')~> dontExists2\nExists1 alterRow(updateIf(true())) ~> AlterRow1\nAlterRow1 sink(input(\n\t\tSSN as integer,\n\t\tFirst_Name as string,\n\t\tPhone_N as string,\n\t\tLast_M as date\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tdeletable:false,\n\tinsertable:false,\n\tupdateable:true,\n\tupsertable:false,\n\tkeys:['SSN'],\n\tformat: 'table',\n\tmapColumn(\n\t\tSSN,\n\t\tFirst_Name,\n\t\tPhone_N,\n\t\tLast_M\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\terrorHandlingOption: 'stopOnFirstError') ~> sink1\ndontExists2 sink(input(\n\t\tSSN as integer,\n\t\tFirst_Name as string,\n\t\tPhone_N as string,\n\t\tLast_M as date\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\tformat: 'table',\n\tmapColumn(\n\t\tSSN,\n\t\tFirst_Name,\n\t\tPhone_N,\n\t\tLast_M\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\terrorHandlingOption: 'stopOnFirstError') ~> sink2"
+		}
+	}
+}
