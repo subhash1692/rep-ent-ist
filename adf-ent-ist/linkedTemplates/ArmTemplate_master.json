@@ -7,13 +7,13 @@
 			"metadata": "Data Factory name",
 			"defaultValue": "adf-ent-ist"
 		},
-		"ls_sql_olap_ist_connectionString": {
-			"type": "secureString",
-			"metadata": "Secure string for 'connectionString' of 'ls_sql_olap_ist'"
-		},
 		"ls_sql_oltp_ist_connectionString": {
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'ls_sql_oltp_ist'"
+		},
+		"ls_sql_olap_ist_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'ls_sql_olap_ist'"
 		},
 		"ls_akv_ent_ist_properties_typeProperties_baseUrl": {
 			"type": "string",
@@ -50,11 +50,11 @@
 					"factoryName": {
 						"value": "[parameters('factoryName')]"
 					},
-					"ls_sql_olap_ist_connectionString": {
-						"value": "[parameters('ls_sql_olap_ist_connectionString')]"
-					},
 					"ls_sql_oltp_ist_connectionString": {
 						"value": "[parameters('ls_sql_oltp_ist_connectionString')]"
+					},
+					"ls_sql_olap_ist_connectionString": {
+						"value": "[parameters('ls_sql_olap_ist_connectionString')]"
 					},
 					"ls_akv_ent_ist_properties_typeProperties_baseUrl": {
 						"value": "[parameters('ls_akv_ent_ist_properties_typeProperties_baseUrl')]"
