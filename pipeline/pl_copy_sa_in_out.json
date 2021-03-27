@@ -71,6 +71,11 @@
 			}
 		],
 		"concurrency": 1,
+		"parameters": {
+			"Filename": {
+				"type": "string"
+			}
+		},
 		"annotations": []
 	}
 }
