@@ -20,14 +20,6 @@
 						"storeSettings": {
 							"type": "AzureBlobStorageReadSettings",
 							"recursive": false,
-							"modifiedDatetimeStart": {
-								"value": "@adddays(utcnow(),-2)",
-								"type": "Expression"
-							},
-							"modifiedDatetimeEnd": {
-								"value": "@utcnow()",
-								"type": "Expression"
-							},
 							"wildcardFileName": "*.csv",
 							"enablePartitionDiscovery": false
 						},
