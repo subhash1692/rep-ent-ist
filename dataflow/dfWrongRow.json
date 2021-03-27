@@ -1,0 +1,45 @@
+{
+	"name": "dfWrongRow",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "dsError",
+						"type": "DatasetReference"
+					},
+					"name": "source1"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "ds_olap_ent_ist_fulload123",
+						"type": "DatasetReference"
+					},
+					"name": "sink1"
+				},
+				{
+					"dataset": {
+						"referenceName": "ds_olap_ent_ist_fulload123_Good",
+						"type": "DatasetReference"
+					},
+					"name": "sink3"
+				}
+			],
+			"transformations": [
+				{
+					"name": "ConditionalSplit1"
+				},
+				{
+					"name": "DerivedColumn1"
+				},
+				{
+					"name": "DerivedColumn3"
+				}
+			],
+			"script": "source(output(\n\t\tOrder_date as date,\n\t\tProduct as string,\n\t\tQuantity as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false) ~> source1\nsource1 split(isNull(Order_date) || isNull(toInteger(Quantity)),\n\tdisjoint: false) ~> ConditionalSplit1@(condition1, condition2)\nConditionalSplit1@condition1 derive(Filename = 'Order.Xslx') ~> DerivedColumn1\nConditionalSplit1@condition2 derive(Filename = 'Order.xlsx') ~> DerivedColumn3\nDerivedColumn1 sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\tformat: 'table',\n\tmapColumn(\n\t\tOrderdt = Order_date,\n\t\tproduct = Product,\n\t\tquantity = Quantity,\n\t\tfilename1 = Filename\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\terrorHandlingOption: 'stopOnFirstError') ~> sink1\nDerivedColumn3 sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\tformat: 'table',\n\tmapColumn(\n\t\tOrderdt = Order_date,\n\t\tproduct = Product,\n\t\tquantity = Quantity,\n\t\tfilename1 = Filename\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\terrorHandlingOption: 'stopOnFirstError') ~> sink3"
+		}
+	}
+}
