@@ -59,7 +59,13 @@
 				"inputs": [
 					{
 						"referenceName": "ds_saentist_input",
-						"type": "DatasetReference"
+						"type": "DatasetReference",
+						"parameters": {
+							"Filename": {
+								"value": "@pipeline().parameters.Filename",
+								"type": "Expression"
+							}
+						}
 					}
 				],
 				"outputs": [
