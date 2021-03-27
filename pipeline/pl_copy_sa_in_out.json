@@ -3,7 +3,7 @@
 	"properties": {
 		"activities": [
 			{
-				"name": "ac_copy_in_out",
+				"name": "Copy data1",
 				"type": "Copy",
 				"dependsOn": [],
 				"policy": {
@@ -20,6 +20,7 @@
 						"storeSettings": {
 							"type": "AzureBlobStorageReadSettings",
 							"recursive": false,
+							"wildcardFileName": "*.csv",
 							"enablePartitionDiscovery": false
 						},
 						"formatSettings": {
@@ -50,7 +51,13 @@
 				"inputs": [
 					{
 						"referenceName": "ds_saentist_input",
-						"type": "DatasetReference"
+						"type": "DatasetReference",
+						"parameters": {
+							"Filename": {
+								"value": "@pipeline().parameters.Filename",
+								"type": "Expression"
+							}
+						}
 					}
 				],
 				"outputs": [
@@ -62,6 +69,11 @@
 			}
 		],
 		"concurrency": 1,
+		"parameters": {
+			"Filename": {
+				"type": "string"
+			}
+		},
 		"annotations": []
 	}
 }

@@ -1,0 +1,28 @@
+{
+	"name": "triggernew",
+	"properties": {
+		"annotations": [],
+		"runtimeState": "Started",
+		"pipelines": [
+			{
+				"pipelineReference": {
+					"referenceName": "pl_copy_sa_in_out",
+					"type": "PipelineReference"
+				},
+				"parameters": {
+					"Filename": "triggerBody().Filename"
+				}
+			}
+		],
+		"type": "BlobEventsTrigger",
+		"typeProperties": {
+			"blobPathBeginsWith": "/input/blobs/input/",
+			"blobPathEndsWith": ".csv",
+			"ignoreEmptyBlobs": true,
+			"scope": "/subscriptions/99cf1373-9b28-434b-80e5-596ff987b845/resourceGroups/rg-ent-ist/providers/Microsoft.Storage/storageAccounts/saentist",
+			"events": [
+				"Microsoft.Storage.BlobCreated"
+			]
+		}
+	}
+}
