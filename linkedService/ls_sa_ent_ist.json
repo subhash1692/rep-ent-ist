@@ -1,6 +1,11 @@
 {
 	"name": "ls_sa_ent_ist",
 	"properties": {
+		"parameters": {
+			"Filename": {
+				"type": "string"
+			}
+		},
 		"annotations": [],
 		"type": "AzureBlobStorage",
 		"typeProperties": {
