@@ -1,0 +1,22 @@
+{
+	"name": "dsBinary2",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "ls_sa_ent_ist",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"Filename": {
+				"type": "string"
+			}
+		},
+		"annotations": [],
+		"type": "Binary",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"container": "input"
+			}
+		}
+	}
+}
