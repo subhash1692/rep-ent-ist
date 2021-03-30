@@ -1,5 +1,5 @@
 {
-	"name": "pipeline_copy_filename_dyn",
+	"name": "pl_copy_deletefile",
 	"properties": {
 		"activities": [
 			{
@@ -24,7 +24,6 @@
 					],
 					"storeSettings": {
 						"type": "AzureBlobStorageReadSettings",
-						"recursive": true,
 						"enablePartitionDiscovery": false
 					},
 					"formatSettings": {
@@ -68,7 +67,7 @@
 									"type": "BinarySource",
 									"storeSettings": {
 										"type": "AzureBlobStorageReadSettings",
-										"recursive": false,
+										"recursive": true,
 										"wildcardFileName": "*.csv",
 										"deleteFilesAfterCompletion": false
 									},
@@ -104,7 +103,7 @@
 							]
 						},
 						{
-							"name": "Delete2",
+							"name": "Delete1",
 							"type": "Delete",
 							"dependsOn": [
 								{

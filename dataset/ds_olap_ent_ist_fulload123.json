@@ -10,7 +10,7 @@
 		"schema": [],
 		"typeProperties": {
 			"schema": "dbo",
-			"table": "Bad_data"
+			"table": "fulload123"
 		}
 	}
 }
