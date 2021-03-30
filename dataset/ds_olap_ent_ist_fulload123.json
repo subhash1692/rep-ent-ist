@@ -24,6 +24,11 @@
 			{
 				"name": "Last_M",
 				"type": "date"
+			},
+			{
+				"name": "rank",
+				"type": "int",
+				"precision": 10
 			}
 		],
 		"typeProperties": {
