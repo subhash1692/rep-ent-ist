@@ -1,0 +1,22 @@
+{
+	"name": "ds_sink_csv",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "ls_sa_ent_ist",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"pr_csv": {
+				"type": "string"
+			}
+		},
+		"annotations": [],
+		"type": "Binary",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"container": "csv"
+			}
+		}
+	}
+}

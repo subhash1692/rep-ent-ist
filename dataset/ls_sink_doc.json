@@ -1,0 +1,17 @@
+{
+	"name": "ls_sink_doc",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "ls_sa_ent_ist",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Binary",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"container": "doc"
+			}
+		}
+	}
+}

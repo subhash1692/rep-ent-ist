@@ -1,0 +1,22 @@
+{
+	"name": "ds_input_files_level",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "ls_sa_ent_ist",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"filename45": {
+				"type": "string"
+			}
+		},
+		"annotations": [],
+		"type": "Binary",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"container": "input"
+			}
+		}
+	}
+}

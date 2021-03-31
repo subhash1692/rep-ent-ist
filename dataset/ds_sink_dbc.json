@@ -1,0 +1,17 @@
+{
+	"name": "ds_sink_dbc",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "ls_sa_ent_ist",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Binary",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"container": "dbc"
+			}
+		}
+	}
+}
